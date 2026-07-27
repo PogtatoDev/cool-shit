@@ -23,7 +23,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="590368a0-1e51-4f79-8d14-9aed73c1dc49" name="Changes" comment="Yeah" />
+    <list default="true" id="590368a0-1e51-4f79-8d14-9aed73c1dc49" name="Changes" comment="Yeah 2">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,6 +125,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Yeah" />
-    <option name="LAST_COMMIT_MESSAGE" value="Yeah" />
+    <MESSAGE value="Yeah 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Yeah 2" />
   </component>
 </project>
