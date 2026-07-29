@@ -1,33 +1,83 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
-#include <ctype.h>
+#include <stdlib.h>
+#include <stdlib.h>
+#define ctrl(key) (key & 0x1f)
+
+struct termios original;
+
+void clear();
+
+void crash(char *msg) {
+    clear();
+
+    perror(msg);
+    exit(1);
+}
+
+void reset_terminal() {
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original) == -1) crash("tcsetattr");
+}
 
 void raw_mode(struct termios *raw) {
-    raw->c_lflag &= ~(ECHO | ICANON);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, raw);
+    raw->c_lflag &= ~(ECHO | IEXTEN | ICANON | ISIG);
+    raw->c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    raw->c_oflag &= ~(OPOST);
+    raw->c_cflag |= (CS8);
+    raw->c_cc[VMIN] = 0;
+    raw->c_cc[VTIME] = 1;
+
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, raw) == -1) crash("tcsetattr");
+}
+
+void draw_line_numbers() {
+    for (int y = 0; y < 24; y++) {
+        printf("%d  \r\n", y);
+    }
 }
 
 
+char read_key() {
+    char c;
+    int returnval;
+    while ((returnval = read(STDIN_FILENO, &c, 1)) != 1) {
+        if (returnval == -1) crash("read");
+    }
+    return c;
+}
+
+void process_key(char key) {
+    switch (key) {
+        case ctrl('q'):
+            clear();
+            exit(0);
+            break;
+    }
+}
+
+void clear() {
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+    write(STDOUT_FILENO, "\x1b[1;4H", 3);
+
+    draw_line_numbers();
+    write(STDOUT_FILENO, "\x1b[1;4H", 3);
+
+}
+
 int main() {
-    struct termios original;
-    tcgetattr(STDIN_FILENO, &original);
+    if (tcgetattr(STDIN_FILENO, &original) == -1) crash("tcgetattr");
     struct termios raw = original;
+    atexit(reset_terminal);
 
     raw_mode(&raw);
 
-    char c;
+    while (1) {
+        char c = read_key();
 
-    while (read(STDIN_FILENO, &c, 1) && c != 'q') {
-        if (iscntrl(c)) {
-            printf("%d\n", c);
-        } else {
-            printf("%d ('%c')\n", c, c);
-        }
-    };
-
-    // reset terminal attributes to their origin state
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &original);
+        clear();
+        process_key(c);
+    }
 
     return 0;
 }
