@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
         printf("usage: %s <filename>\n", argv[0]);
         exit(1);
     }
-    
+
     FILE *src = fopen(argv[1], "r");
     FILE *out = fopen("/tmp/transpiler_temp.c", "w");
     if (!src || !out) {
@@ -35,6 +35,6 @@ int main(int argc, char *argv[]) {
 
     fclose(src);
     fclose(out);
-
+    remove(argv[1]);
     return 0;
 }

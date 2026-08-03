@@ -121,7 +121,7 @@ void sv_to_cstr(StringView sv_in, char *dest_cstr) {
 }
 
 StringView sv_tok(StringView *sv, char delim) {
-	while (sv->count < 0 && sv->text[0] == delim)
+	while (sv->count > 0 && *sv->text == delim)
 		sv_chop_left(sv, 1);
 	
 	if (sv->count == 0)
@@ -137,7 +137,11 @@ StringView sv_tok(StringView *sv, char delim) {
 	return tok;
 }
 
-bool sv_compare(StringView sv1, StringView sv2) {
+bool sv_cmp(StringView sv1, StringView sv2) {
 	if (sv1.count != sv2.count) return false;
-	return (bool)strcmp(sv1.text, sv2.text);
+	return !(bool)strcmp(sv1.text, sv2.text);
+}
+
+bool sv_cmp_cstr(StringView sv, char *cstr) {
+	return !(bool)strcmp(sv.text, cstr);
 }
