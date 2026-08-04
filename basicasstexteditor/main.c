@@ -10,7 +10,6 @@ struct termios original;
 void clear();
 
 void crash(char *msg) {
-    clear();
 
     perror(msg);
     exit(1);
@@ -31,11 +30,6 @@ void raw_mode(struct termios *raw) {
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, raw) == -1) crash("tcsetattr");
 }
 
-void draw_line_numbers() {
-    for (int y = 0; y < 24; y++) {
-        printf("%d  \r\n", y);
-    }
-}
 
 
 char read_key() {
@@ -54,13 +48,14 @@ void process_key(char key) {
             exit(0);
             break;
     }
+
+    printf("%c", key);
 }
 
 void clear() {
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[1;4H", 3);
 
-    draw_line_numbers();
     write(STDOUT_FILENO, "\x1b[1;4H", 3);
 
 }
@@ -74,8 +69,7 @@ int main() {
 
     while (1) {
         char c = read_key();
-
-        clear();
+        
         process_key(c);
     }
 

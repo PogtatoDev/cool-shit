@@ -73,6 +73,7 @@ void sv_remove_character(StringView sv_in, StringView *sv_out, char c,
 
 void sv_chop_left(StringView *sv, size_t n) {
 	if (sv->count < n) n = sv->count;
+
 	sv->count -= n;
 	sv->text += n;
 }
@@ -83,8 +84,8 @@ void sv_chop_right(StringView *sv, size_t n) {
 }
 
 void sv_trim(StringView *sv) {
-    while (sv->count > 0 && isspace((uint8_t)sv->text[sv->count - 1])) {
-        sv_chop_right(sv, 1);
+	while (sv->count > 0 && isspace((uint8_t)sv->text[sv->count - 1])) {
+		sv_chop_right(sv, 1);
     }
 }
 
